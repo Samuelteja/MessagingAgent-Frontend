@@ -45,7 +45,7 @@ export const bulkUploadKnowledge = (items) => apiClient.post('/knowledge/bulk-up
 export const bulkUploadMenu = (items) => apiClient.post('/menu/bulk-upload', items);
 
 export const getInboxConversations = () => {
-  return apiClient.get('/contacts/inbox'); // <-- NEW PATH
+  return apiClient.get('/contacts/inbox');
 };
 
 export const getConversationHistory = (contactId) => {
@@ -53,7 +53,6 @@ export const getConversationHistory = (contactId) => {
 };
 
 export const updateContactTags = (contactId, tags) => {
-  // The response is now a Contact object, which the frontend can use to update state.
   return apiClient.post(`/contacts/${contactId}/tags`, { tags });
 };
 
