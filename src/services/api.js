@@ -26,6 +26,15 @@ export const getMenuItems = async () => {
 export const getTags = () => apiClient.get('/tags/');
 export const createTag = (tag) => apiClient.post('/tags/', tag);
 
+// --- AI Tagging Rules API Functions ---
+
+export const getAITagRules = () => {
+  return apiClient.get('/tag-rules/');
+};
+
+export const deleteAITagRule = (ruleId) => {
+  return apiClient.delete(`/tag-rules/${ruleId}`);
+};
 
 // --- Staff API Functions ---
 export const getStaff = () => apiClient.get('/staff/');
@@ -36,12 +45,10 @@ export const createStaff = (staffMember) => apiClient.post('/staff/', staffMembe
 export const getHours = () => apiClient.get('/hours/');
 export const updateHours = (hoursData) => apiClient.post('/hours/', hoursData);
 
-// --- NEW Backend Endpoint for Bulk Upload ---
-// The lead dev needs to create this endpoint in Python.
-// For now, the frontend will call it.
+// --- Backend Endpoint for Bulk Upload ---
 export const bulkUploadKnowledge = (items) => apiClient.post('/knowledge/bulk-upload', items);
 
-// --- ADD THIS NEW, DEDICATED FUNCTION FOR MENU UPLOAD ---
+// --- DEDICATED FUNCTION FOR MENU UPLOAD ---
 export const bulkUploadMenu = (items) => apiClient.post('/menu/bulk-upload', items);
 
 export const getInboxConversations = () => {
@@ -95,4 +102,8 @@ export const bulkImportContacts = (contacts) => {
 
 export const getAllContacts = () => {
   return apiClient.get('/contacts/');
+};
+
+export const getScheduledTasks = () => {
+  return apiClient.get('/scheduled-tasks/');
 };

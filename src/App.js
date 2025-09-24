@@ -17,6 +17,8 @@ import InboxPage from './pages/InboxPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import CampaignsPage from './pages/CampaignsPage';
 import ImportCustomersPage from './pages/ImportCustomersPage';
+import AITaggingRulesPage from './pages/knowledge/AITaggingRulesPage';
+import ScheduledOutreachPage from './pages/operations/ScheduledOutreachPage';
 
 const UpsellRulesPage = () => <h1 className="text-3xl font-bold">Upsell Rules are now managed inside the Menu page.</h1>;
 
@@ -31,11 +33,13 @@ function App() {
             
             <Route path="knowledge/menu" element={<MenuPage />} />
             <Route path="knowledge/qa" element={<QAPage />} />
+            <Route path="knowledge/ai-rules" element={<AITaggingRulesPage />} />
             <Route path="knowledge/upsell" element={<UpsellRulesPage />} />
 
             <Route path="operations/profile" element={<BusinessProfilePage />} />
             <Route path="operations/hours" element={<BusinessHoursPage />} />
             <Route path="operations/staff" element={<StaffPage />} />
+            <Route path="operations/scheduled-outreach" element={<ScheduledOutreachPage />} />
 
             <Route path="inbox" element={<InboxPage />} />
             <Route path="import" element={<ImportCustomersPage />} />
@@ -45,7 +49,6 @@ function App() {
             <Route path="analytics" element={<AnalyticsPage />} />
 
             <Route path="*" element={<h1 className="text-3xl font-bold">444 - Page Not Found</h1>} />
-            {/* Also, you have a duplicate "analytics" route here, which should be removed */}
           </Route>
         </Routes>
       </BrowserRouter>

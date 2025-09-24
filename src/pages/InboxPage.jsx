@@ -259,7 +259,7 @@ function InboxPage() {
             </div>
             <div className="flex flex-grow bg-white rounded-lg shadow-md overflow-hidden">
                 {/* Left Panel: Conversation List */}
-                <div className="w-1/3 border-r border-gray-200 overflow-y-auto">
+                <div className="w-1/3 border-r border-gray-200 overflow-y-auto overflow-x-hidden">
                     {isLoading ? <div className="p-4 text-gray-500">Loading conversations...</div> : (
                         <>
                             {filteredConversations.length > 0 ? (
@@ -343,17 +343,17 @@ function InboxPage() {
                                {isHistoryLoading ? <div className="text-center text-gray-500">Loading history...</div> : messageHistory?.map(msg => (
                                    <React.Fragment key={msg.id}>
                                        {/* Incoming Message */}
-                                       <div className="flex justify-start">
+                                       <div className="flex justify-start min-w-0">
                                            <div className="bg-white p-3 rounded-lg max-w-xl shadow-sm">
-                                               <p>{msg.incoming_text}</p>
+                                               <p className="break-words">{msg.incoming_text}</p>
                                                <p className="text-xs text-gray-500 text-right mt-1">{formatTimestamp(msg.timestamp)}</p>
                                            </div>
                                        </div>
                                        {/* Outgoing Message */}
                                        {msg.outgoing_text && (
-                                           <div className="flex justify-end">
+                                           <div className="flex justify-end min-w-0">
                                                <div className="bg-blue-500 text-white p-3 rounded-lg max-w-xl shadow-sm">
-                                                   <p>{msg.outgoing_text}</p>
+                                                   <p className="break-words">{msg.outgoing_text}</p>
                                                    <p className="text-xs text-blue-200 text-right mt-1">{formatTimestamp(msg.timestamp)}</p>
                                                </div>
                                            </div>

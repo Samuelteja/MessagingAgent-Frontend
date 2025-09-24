@@ -4,7 +4,7 @@ import { useLayout } from '../context/LayoutContext';
 import clsx from 'clsx';
 import { 
     FiChevronLeft, FiChevronRight, FiInbox, FiTag, 
-    FiBarChart2, FiSettings, FiClock, FiUsers, FiMessageSquare, FiClipboard
+    FiBarChart2, FiSettings, FiClock, FiUsers, FiMessageSquare, FiClipboard, FiCpu
 } from 'react-icons/fi'; // Assuming you have `npm install react-icons`
 
 function Sidebar() {
@@ -62,6 +62,12 @@ function Sidebar() {
                     {isSidebarOpen && <span className="ml-3">Q&A</span>}
                 </NavLink>
             </li>
+            <li>
+                <NavLink to="/knowledge/ai-rules" className={getNavLinkClass}>
+                    <FiCpu size={20} />
+                    {isSidebarOpen && <span className="ml-3">AI Tagging Rules</span>}
+                </NavLink>
+            </li>
 
             {/* Operations Section */}
             {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-4">Operations</strong>}
@@ -81,6 +87,12 @@ function Sidebar() {
                 <NavLink to="/operations/staff" className={getNavLinkClass}>
                     <FiUsers size={20} />
                     {isSidebarOpen && <span className="ml-3">Staff</span>}
+                </NavLink>
+            </li>
+            <li>
+                <NavLink to="/operations/scheduled-outreach" className={getNavLinkClass}>
+                    <FiClock size={20} /> {/* Using FiClock as it relates to scheduling */}
+                    {isSidebarOpen && <span className="ml-3">Scheduled Outreach</span>}
                 </NavLink>
             </li>
             
