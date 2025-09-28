@@ -1,9 +1,11 @@
+// src/components/Sidebar.jsx
+
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useLayout } from '../context/LayoutContext';
 import clsx from 'clsx';
 import { 
-    FiChevronLeft, FiChevronRight, FiInbox, FiTag, 
+    FiCalendar, FiChevronLeft, FiChevronRight, FiInbox, FiTag, 
     FiBarChart2, FiSettings, FiClock, FiUsers, FiMessageSquare, FiClipboard, FiCpu
 } from 'react-icons/fi'; // Assuming you have `npm install react-icons`
 
@@ -48,6 +50,13 @@ function Sidebar() {
       {/* We wrap the navigation list in a div that will handle the scrolling. */}
       <div className="flex-grow overflow-y-auto">
         <ul className="space-y-2">
+            {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-2">Salon</strong>}
+            <li>
+                <NavLink to="/salon/calendar" className={getNavLinkClass}>
+                    <FiCalendar size={20} />
+                    {isSidebarOpen && <span className="ml-3">Calendar</span>}
+                </NavLink>
+            </li>
             {/* Knowledge Section */}
             {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-2">AI & Knowledge</strong>}
             <li>

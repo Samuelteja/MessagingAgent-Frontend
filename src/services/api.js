@@ -107,3 +107,37 @@ export const getAllContacts = () => {
 export const getScheduledTasks = () => {
   return apiClient.get('/scheduled-tasks/');
 };
+
+// --- APIs for Manual Booking ---
+export const getMenuForDropdown = () => {
+  return apiClient.get('/menu/for-dropdown');
+};
+
+export const getStaffForDropdown = () => {
+  return apiClient.get('/staff/for-dropdown');
+};
+
+export const createBooking = (bookingData) => {
+  return apiClient.post('/bookings', bookingData);
+};
+
+export const uploadDeliveryList = (formData) => {
+  // We must set the Content-Type header to multipart/form-data for file uploads
+  return apiClient.post('/delivery-lists/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
+export const getBookings = (startDate, endDate) => {
+  return apiClient.get(`/bookings?start_date=${startDate}&end_date=${endDate}`);
+};
+
+export const getDeliveryList = (date) => {
+  return apiClient.get(`/delivery-lists/${date}`);
+};
+
+export const updateBooking = (bookingId, bookingData) => {
+  return apiClient.put(`/bookings/${bookingId}`, bookingData);
+};

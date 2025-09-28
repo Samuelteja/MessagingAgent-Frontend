@@ -2,12 +2,16 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { getScheduledTasks } from '../../services/api';
-import { FiClock, FiSend, FiRepeat } from 'react-icons/fi';
+import { FiClock, FiRepeat, FiRotateCw, FiStar, FiSend } from 'react-icons/fi';
 
-// Helper to render a nice icon and label for each task type
+// ==============================================================================
+// --- REVISED & FUTURE-PROOF TaskTypeDisplay Component ---
+// ==============================================================================
 const TaskTypeDisplay = ({ type }) => {
     let icon, text, color;
+
     switch (type) {
+        // --- Current, In-Use Types ---
         case 'APPOINTMENT_REMINDER':
             icon = <FiClock className="mr-2 text-blue-500" />;
             text = 'Appointment Reminder';
@@ -18,15 +22,39 @@ const TaskTypeDisplay = ({ type }) => {
             text = 'Lead Follow-up';
             color = 'bg-orange-100 text-orange-800';
             break;
+        
+        // --- Planned, Future Types ---
+        case 'REBOOKING_SUGGESTION':
+            icon = <FiRotateCw className="mr-2 text-purple-500" />;
+            text = 'Re-booking Suggestion';
+            color = 'bg-purple-100 text-purple-800';
+            break;
+        case 'FEEDBACK_REQUEST':
+            icon = <FiStar className="mr-2 text-yellow-500" />;
+            text = 'Feedback Request';
+            color = 'bg-yellow-100 text-yellow-800';
+            break;
+
+        // --- The Robust Default Case ---
+        // Handles any unexpected new types gracefully.
         default:
             icon = <FiSend className="mr-2 text-gray-500" />;
-            text = 'General Follow-up';
+            // Capitalize the first letter and replace underscores with spaces
+            text = (type || 'Unknown').charAt(0).toUpperCase() + (type || 'Unknown').slice(1).toLowerCase().replace(/_/g, ' ');
             color = 'bg-gray-100 text-gray-800';
+            break;
     }
-    return <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${color}`}>{icon}{text}</span>;
+
+    return (
+        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${color}`}>
+            {icon}{text}
+        </span>
+    );
 };
 
-
+// ==============================================================================
+// --- Main Page Component (No other changes needed) ---
+// ==============================================================================
 function ScheduledOutreachPage() {
     const [tasks, setTasks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -37,7 +65,6 @@ function ScheduledOutreachPage() {
         setError(null);
         try {
             const res = await getScheduledTasks();
-            // Sort tasks by scheduled time, soonest first
             const sortedTasks = res.data.sort((a, b) => new Date(a.scheduled_time) - new Date(b.scheduled_time));
             setTasks(sortedTasks);
         } catch (err) {
@@ -63,7 +90,7 @@ function ScheduledOutreachPage() {
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Scheduled Outreach</h1>
             <div className="p-4 bg-gray-50 border-l-4 border-gray-400 text-gray-800 mb-8 rounded-md">
                 <p className="font-bold">What is this?</p>
-                <p className="text-sm">This is a read-only log of all proactive messages the AI has scheduled to send in the future. This includes appointment reminders and follow-ups for potential leads.</p>
+                <p className="text-sm">This is a read-only log of all proactive, one-to-one messages the AI has scheduled to send in the future. This does not include broadcast campaign messages.</p>
             </div>
 
             {error && <div className="p-4 mb-4 bg-red-100 text-red-700 rounded-md">{error}</div>}

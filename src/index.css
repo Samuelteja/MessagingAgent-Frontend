@@ -32,3 +32,55 @@ nav .overflow-y-auto::-webkit-scrollbar-thumb {
 nav .overflow-y-auto::-webkit-scrollbar-thumb:hover {
   background-color: #718096; /* A lighter gray on hover (gray-500) */
 }
+
+/* Main calendar container - remove default borders */
+.fc {
+  @apply border-none;
+}
+
+/* Header toolbar buttons */
+.fc .fc-button {
+  @apply bg-blue-500 text-white font-bold border-none shadow-sm transition-colors;
+}
+
+.fc .fc-button:hover {
+  @apply bg-blue-600;
+}
+
+.fc .fc-button:focus {
+  @apply ring-2 ring-blue-300 outline-none;
+}
+
+/* Today's date column styling */
+.fc .fc-day-today {
+  @apply bg-blue-50 !important; /* A very light blue for the 'today' column */
+}
+
+/* General event styling */
+.fc-event {
+  @apply shadow-md border-transparent text-sm transition-transform duration-200;
+}
+
+.fc-event:hover {
+    @apply shadow-lg transform -translate-y-0.5;
+}
+
+/* Style for the time labels on the left (8am, 9am, etc.) */
+.fc .fc-timegrid-slot-label {
+    @apply font-semibold text-gray-500 text-right pr-4 border-b-0;
+}
+
+/* The main horizontal lines for each hour */
+.fc .fc-timegrid-slot-lane {
+    @apply border-gray-200;
+}
+
+/* The secondary horizontal lines for the half-hour marks */
+.fc .fc-timegrid-slot-minor {
+    @apply border-dotted border-gray-200;
+}
+
+/* Vertical lines that separate the days */
+.fc .fc-timegrid-col.fc-day {
+    @apply border-l border-gray-200;
+}

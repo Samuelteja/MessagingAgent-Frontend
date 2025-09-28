@@ -1,3 +1,5 @@
+// src/context/LayoutContext.jsx
+
 import React, { createContext, useState, useContext } from 'react';
 
 // 1. Create the context
