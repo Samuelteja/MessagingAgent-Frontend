@@ -5,7 +5,7 @@ import Select from 'react-select';
 import { getMenuForDropdown, getStaffForDropdown, updateBooking } from '../services/api';
 import { FiX, FiSave } from 'react-icons/fi';
 
-function EditBookingModal({ isOpen, event, onClose, onSave }) {
+function EditBookingModal({ isOpen, item, onClose, onSave }) {
   // Form field state
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerName, setCustomerName] = useState('');
@@ -24,34 +24,39 @@ function EditBookingModal({ isOpen, event, onClose, onSave }) {
   const [error, setError] = useState(null);
 
   // This effect runs when the modal is opened.
-  // It fetches dropdown data AND populates the form with the event's details.
+  // It fetches dropdown data AND populates the form with the item's details.
   useEffect(() => {
-    if (isOpen && event) {
+    if (isOpen && item) {
       const initializeForm = async () => {
         try {
           const [menuRes, staffRes] = await Promise.all([
             getMenuForDropdown(),
             getStaffForDropdown()
           ]);
-          
+
           const menuOpts = menuRes.data.map(item => ({ value: item.id, label: item.name }));
           const staffOpts = staffRes.data.map(staff => ({ value: staff.id, label: staff.name }));
           setServiceOptions(menuOpts);
           setStaffOptions(staffOpts);
 
-          const eventProps = event.extendedProps;
-          setCustomerPhone(eventProps.customer_phone || '');
-          setCustomerName(eventProps.customer_name || '');
-          setNotes(eventProps.notes || '');
+          // Check if item is an event (from calendar) or booking (from table)
+          const isEvent = item.extendedProps;
+          const data = isEvent ? item.extendedProps : item;
 
-          const serviceId = eventProps.service_id;
+          setCustomerPhone(isEvent ? data.customer_phone || '' : data.contact?.contact_id || '');
+          setCustomerName(isEvent ? data.customer_name || '' : data.contact?.name || '');
+          setNotes(data.notes || '');
+
+          const serviceId = data.service_id;
           const currentService = menuOpts.find(opt => opt.value === serviceId);
           setSelectedService(currentService);
-          
-          const currentStaff = staffOpts.find(opt => opt.label === eventProps.staff_name);
+
+          const currentStaff = isEvent
+            ? staffOpts.find(opt => opt.label === data.staff_name)
+            : staffOpts.find(opt => opt.value === data.staff?.id);
           setSelectedStaff(currentStaff);
 
-          const startDate = new Date(event.start);
+          const startDate = new Date(isEvent ? item.start : data.booking_datetime);
           setBookingDate(startDate.toISOString().split('T')[0]);
           setBookingTime(startDate.toTimeString().substring(0, 5));
 
@@ -62,7 +67,7 @@ function EditBookingModal({ isOpen, event, onClose, onSave }) {
       };
       initializeForm();
     }
-  }, [isOpen, event]);
+  }, [isOpen, item]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,7 +75,11 @@ function EditBookingModal({ isOpen, event, onClose, onSave }) {
     setError(null);
 
     const bookingDateTime = `${bookingDate}T${bookingTime}:00`;
-    const duration = new Date(event.end) - new Date(event.start);
+    const isEvent = item.extendedProps;
+    const data = isEvent ? item.extendedProps : item;
+    const duration = isEvent
+      ? new Date(item.end) - new Date(item.start)
+      : new Date(data.end_datetime) - new Date(data.booking_datetime);
     const endDateTime = new Date(new Date(bookingDateTime).getTime() + duration).toISOString();
     const staffIdAsInt = selectedStaff ? parseInt(selectedStaff.value, 10) : null;
 
@@ -85,7 +94,7 @@ function EditBookingModal({ isOpen, event, onClose, onSave }) {
     };
 
     try {
-      await updateBooking(event.id, payload);
+      await updateBooking(isEvent ? item.id : data.id, payload);
       onSave();
       onClose();
     } catch (err) {

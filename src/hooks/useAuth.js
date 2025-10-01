@@ -11,10 +11,10 @@ export function useAuth() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        setUser({ business_type: 'SALON', isLoading: false }); // Default to SALON for now
+        setUser({ business_type: 'GAS_DISTRIBUTOR', isLoading: false }); // Default to SALON for now
       } catch (error) {
         console.error("Auth Error: Could not fetch user profile.", error);
-        setUser({ business_type: 'SALON', isLoading: false });
+        setUser({ business_type: 'GAS_DISTRIBUTOR', isLoading: false });
       }
     };
     fetchProfile();

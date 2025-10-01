@@ -1,10 +1,10 @@
 // In frontend/src/pages/salon/SalonCalendarPage.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction'; // For clickable events
+import interactionPlugin from '@fullcalendar/interaction';
 
 // Import our new custom hook and the modal
 import { useCalendar } from '../../hooks/useCalendar';
@@ -45,20 +45,23 @@ function SalonCalendarPage() {
     setIsEditModalOpen(true);   // Immediately open the edit view with the same event data
   };
 
+  const initialScrollTime = useMemo(() => {
+    const now = new Date();
+    const scrollTime = new Date(now.getTime() - 60 * 60 * 1000); // Subtract 1 hour
+    const hour = scrollTime.getHours();
+    const minute = scrollTime.getMinutes();
+    return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
+  }, []);
+
   const renderEventContent = (eventInfo) => {
     const staffName = eventInfo.event.extendedProps.staff_name;
     return (
       <div className="flex flex-col p-1 w-full h-full overflow-hidden">
-        <div className="flex justify-between items-center text-xs font-bold">
-          <span>{eventInfo.timeText}</span>
-        </div>
         <p className="font-semibold text-sm truncate">{eventInfo.event.title}</p>
-        {staffName && (
-          <div className="flex items-center text-xs truncate italic opacity-80 mt-1">
-            <FiUser className="mr-1 flex-shrink-0" />
-            <span>{staffName}</span>
-          </div>
-        )}
+        {/* 
+          <div className="flex justify-between items-center text-xs font-bold">
+          <span>{eventInfo.timeText}</span>
+        </div>  */}
       </div>
     );
   };
@@ -103,10 +106,12 @@ function SalonCalendarPage() {
           datesSet={handleDatesSet} // The core function to trigger data fetching
           eventClick={handleEventClick} // Handle clicks on existing events
           height="75vh" // Use viewport height for a responsive calendar
-          slotMinTime="08:00:00"
+          slotMinTime="00:00:00"
           slotMaxTime="21:00:00"
           allDaySlot={false} // Typically not needed for salon bookings
           eventContent={renderEventContent}
+          scrollTime={initialScrollTime}
+          nowIndicator={true}
         />
       </div>
 
@@ -124,7 +129,7 @@ function SalonCalendarPage() {
 
       <EditBookingModal
         isOpen={isEditModalOpen}
-        event={selectedEvent}
+        item={selectedEvent}
         onClose={() => setIsEditModalOpen(false)}
         onSave={handleBookingUpdated}
       />

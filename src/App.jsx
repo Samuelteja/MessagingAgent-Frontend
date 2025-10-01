@@ -1,4 +1,4 @@
-// In frontend/src/App.js
+// In frontend/src/App.jsx
 
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ import { useAuth } from './hooks/useAuth';
 
 // Import ALL page components here, as App.js is now the central router
 import SalonCalendarPage from './pages/salon/SalonCalendarPage';
+import AllBookingsPage from './pages/salon/AllBookingsPage';
 import MenuPage from './pages/knowledge/MenuPage';
 import QAPage from './pages/knowledge/QAPage';
 import AITaggingRulesPage from './pages/knowledge/AITaggingRulesPage';
@@ -58,13 +59,13 @@ function App() {
               <>
                 <Route index element={<Navigate to="salon/calendar" replace />} />
                 <Route path="salon/calendar" element={<SalonCalendarPage />} />
+                <Route path="salon/bookings" element={<AllBookingsPage />} />
                 <Route path="knowledge/menu" element={<MenuPage />} />
                 <Route path="knowledge/qa" element={<QAPage />} />
                 <Route path="knowledge/ai-rules" element={<AITaggingRulesPage />} />
                 <Route path="knowledge/upsell" element={<UpsellRulesPage />} />
                 <Route path="operations/profile" element={<BusinessProfilePage />} />
                 <Route path="operations/hours" element={<BusinessHoursPage />} />
-                <Route path="operations/staff" element={<StaffPage />} />
                 <Route path="operations/scheduled-outreach" element={<ScheduledOutreachPage />} />
                 <Route path="inbox" element={<InboxPage />} />
                 <Route path="import" element={<ImportCustomersPage />} />
@@ -79,6 +80,18 @@ function App() {
                 <Route index element={<Navigate to="gas/import" replace />} />
                 <Route path="gas/import" element={<BookingImportPage />} />
                 <Route path="gas/deliveries" element={<DailyDeliveriesPage />} />
+                <Route path="knowledge/menu" element={<MenuPage />} />
+                <Route path="knowledge/qa" element={<QAPage />} />
+                <Route path="knowledge/ai-rules" element={<AITaggingRulesPage />} />
+                <Route path="knowledge/upsell" element={<UpsellRulesPage />} />
+                <Route path="operations/profile" element={<BusinessProfilePage />} />
+                <Route path="operations/hours" element={<BusinessHoursPage />} />
+                <Route path="operations/staff" element={<StaffPage />} />
+                <Route path="inbox" element={<InboxPage />} />
+                <Route path="campaigns" element={<CampaignsPage />} />
+                <Route path="import" element={<ImportCustomersPage />} />
+                <Route path="tags" element={<TagsPage />} />
+                <Route path="analytics" element={<AnalyticsPage />} />
               </>
             )}
             

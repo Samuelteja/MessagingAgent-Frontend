@@ -62,6 +62,26 @@ function calendarReducer(state, action) {
   }
 }
 
+const mapBookingToEvent = (booking) => {
+    return {
+        // FullCalendar expects 'id', 'title', 'start', 'end'
+        id: booking.id,
+        title: booking.service.name, // The service name becomes the event title
+        start: booking.booking_datetime, // The start time
+        end: booking.end_datetime, // The end time
+        
+        // We can store all other rich data in 'extendedProps'
+        // This makes it available when a user clicks on an event.
+        extendedProps: {
+            service_id: booking.service.id,
+            staff_name: booking.staff ? booking.staff.name : 'Unassigned',
+            customer_name: booking.contact.name,
+            customer_phone: booking.contact.contact_id,
+            notes: booking.notes,
+        },
+    };
+};
+
 // 4. The custom hook itself
 export function useCalendar() {
   const [state, dispatch] = useReducer(calendarReducer, initialState);
@@ -85,9 +105,10 @@ export function useCalendar() {
     console.log("Fetching from API for:", cacheKey);
     try {
       const res = await getBookings(startDate, endDate);
-      const styledEvents = res.data.map(event => ({
+      const mappedEvents = res.data.map(mapBookingToEvent);
+      const styledEvents = mappedEvents.map(event => ({
         ...event,
-        className: getEventColorClasses(event.staff_name) + ' border-l-4 cursor-pointer',
+        className: getEventColorClasses(event.extendedProps.staff_name) + ' border-l-4 cursor-pointer',
       }));
       // Store the successful response in the cache
       cache.current[cacheKey] = styledEvents;

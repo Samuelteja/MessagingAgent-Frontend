@@ -3,18 +3,20 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useLayout } from '../context/LayoutContext';
+import { useAuth } from '../hooks/useAuth';
 import clsx from 'clsx';
 import { 
-    FiCalendar, FiChevronLeft, FiChevronRight, FiInbox, FiTag, 
-    FiBarChart2, FiSettings, FiClock, FiUsers, FiMessageSquare, FiClipboard, FiCpu
+    FiList, FiCalendar, FiChevronLeft, FiChevronRight, FiInbox, FiTag, 
+    FiBarChart2, FiSettings, FiClock, FiUsers, FiMessageSquare, FiClipboard, FiCpu,
+    FiTruck, FiUploadCloud
 } from 'react-icons/fi'; // Assuming you have `npm install react-icons`
 
 function Sidebar() {
   const { isSidebarOpen, toggleSidebar } = useLayout();
+  const { business_type } = useAuth();
 
   const getNavLinkClass = ({ isActive }) =>
     clsx(
-      // --- REFACTOR ---: Reduced padding for a more compact feel.
       "flex items-center p-2 rounded-md text-gray-200 hover:bg-gray-700 transition-colors",
       {
         "bg-blue-500 font-bold": isActive,
@@ -50,96 +52,75 @@ function Sidebar() {
       {/* We wrap the navigation list in a div that will handle the scrolling. */}
       <div className="flex-grow overflow-y-auto">
         <ul className="space-y-2">
-            {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-2">Salon</strong>}
-            <li>
-                <NavLink to="/salon/calendar" className={getNavLinkClass}>
-                    <FiCalendar size={20} />
-                    {isSidebarOpen && <span className="ml-3">Calendar</span>}
-                </NavLink>
-            </li>
-            {/* Knowledge Section */}
-            {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-2">AI & Knowledge</strong>}
-            <li>
-                <NavLink to="/knowledge/menu" className={getNavLinkClass}>
-                    <FiClipboard size={20} />
-                    {isSidebarOpen && <span className="ml-3">Menu</span>}
-                </NavLink>
-            </li>
-            <li>
-                <NavLink to="/knowledge/qa" className={getNavLinkClass}>
-                    <FiMessageSquare size={20} />
-                    {isSidebarOpen && <span className="ml-3">Q&A</span>}
-                </NavLink>
-            </li>
-            <li>
-                <NavLink to="/knowledge/ai-rules" className={getNavLinkClass}>
-                    <FiCpu size={20} />
-                    {isSidebarOpen && <span className="ml-3">AI Tagging Rules</span>}
-                </NavLink>
-            </li>
 
-            {/* Operations Section */}
-            {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-4">Operations</strong>}
-            <li>
-                <NavLink to="/operations/profile" className={getNavLinkClass}>
-                    <FiSettings size={20} />
-                    {isSidebarOpen && <span className="ml-3">Business Profile</span>}
-                </NavLink>
-            </li>
-            <li>
-                <NavLink to="/operations/hours" className={getNavLinkClass}>
-                    <FiClock size={20} />
-                    {isSidebarOpen && <span className="ml-3">Hours</span>}
-                </NavLink>
-            </li>
-            <li>
-                <NavLink to="/operations/staff" className={getNavLinkClass}>
-                    <FiUsers size={20} />
-                    {isSidebarOpen && <span className="ml-3">Staff</span>}
-                </NavLink>
-            </li>
-            <li>
-                <NavLink to="/operations/scheduled-outreach" className={getNavLinkClass}>
-                    <FiClock size={20} /> {/* Using FiClock as it relates to scheduling */}
-                    {isSidebarOpen && <span className="ml-3">Scheduled Outreach</span>}
-                </NavLink>
-            </li>
-            
-            {/* Customer Engagement Section */}
-            {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-4">Engagement</strong>}
-            <li>
-                <NavLink to="/inbox" className={getNavLinkClass}>
-                    <FiInbox size={20} />
-                    {isSidebarOpen && <span className="ml-3">Inbox</span>}
-                </NavLink>
-            </li>
-            <li>
-                <NavLink to="/campaigns" className={getNavLinkClass}>
-                    <FiTag size={20} /> {/* We can use FiSend or FiMegaphone later */}
-                    {isSidebarOpen && <span className="ml-3">Campaigns</span>}
-                </NavLink>
-            </li>
-            <li>
-                <NavLink to="/import" className={getNavLinkClass}>
-                    <FiUsers size={20} />
-                    {isSidebarOpen && <span className="ml-3">Customers</span>}
-                </NavLink>
-            </li>
-            <li>
-                <NavLink to="/tags" className={getNavLinkClass}>
-                    <FiTag size={20} />
-                    {isSidebarOpen && <span className="ml-3">Tags</span>}
-                </NavLink>
-            </li>
-            
-            {/* Performance Section */}
-            {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-4">Performance</strong>}
-            <li>
-                <NavLink to="/analytics" className={getNavLinkClass}>
-                    <FiBarChart2 size={20} />
-                    {isSidebarOpen && <span className="ml-3">Analytics</span>}
-                </NavLink>
-            </li>
+            {/* ================================================================== */}
+            {/* --- CONDITIONAL RENDERING FOR SALON WORKFLOW --- */}
+            {/* ================================================================== */}
+            {business_type === 'SALON' && (
+                <>
+                    {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-2">Salon</strong>}
+                    <li><NavLink to="/salon/calendar" className={getNavLinkClass}><FiCalendar size={20} />{isSidebarOpen && <span className="ml-3">Calendar</span>}</NavLink></li>
+                    <li><NavLink to="/salon/bookings" className={getNavLinkClass}><FiList size={20} />{isSidebarOpen && <span className="ml-3">All Bookings</span>}</NavLink></li>
+
+                    {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-2">AI & Knowledge</strong>}
+                    <li><NavLink to="/knowledge/menu" className={getNavLinkClass}><FiClipboard size={20} />{isSidebarOpen && <span className="ml-3">Menu</span>}</NavLink></li>
+                    <li><NavLink to="/knowledge/qa" className={getNavLinkClass}><FiMessageSquare size={20} />{isSidebarOpen && <span className="ml-3">Q&A</span>}</NavLink></li>
+                    <li><NavLink to="/knowledge/ai-rules" className={getNavLinkClass}><FiCpu size={20} />{isSidebarOpen && <span className="ml-3">AI Tagging Rules</span>}</NavLink></li>
+
+                    {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-4">Operations</strong>}
+                    <li><NavLink to="/operations/profile" className={getNavLinkClass}><FiSettings size={20} />{isSidebarOpen && <span className="ml-3">Business Profile</span>}</NavLink></li>
+                    <li><NavLink to="/operations/hours" className={getNavLinkClass}><FiClock size={20} />{isSidebarOpen && <span className="ml-3">Hours</span>}</NavLink></li>
+                    <li><NavLink to="/operations/staff" className={getNavLinkClass}><FiUsers size={20} />{isSidebarOpen && <span className="ml-3">Staff</span>}</NavLink></li>
+                    <li><NavLink to="/operations/scheduled-outreach" className={getNavLinkClass}><FiClock size={20} />{isSidebarOpen && <span className="ml-3">Scheduled Outreach</span>}</NavLink></li>
+
+                    {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-4">Engagement</strong>}
+                    <li><NavLink to="/inbox" className={getNavLinkClass}><FiInbox size={20} />{isSidebarOpen && <span className="ml-3">Inbox</span>}</NavLink></li>
+                    <li><NavLink to="/campaigns" className={getNavLinkClass}><FiTag size={20} />{isSidebarOpen && <span className="ml-3">Campaigns</span>}</NavLink></li>
+                    <li><NavLink to="/import" className={getNavLinkClass}><FiUsers size={20} />{isSidebarOpen && <span className="ml-3">Customers</span>}</NavLink></li>
+                    <li><NavLink to="/tags" className={getNavLinkClass}><FiTag size={20} />{isSidebarOpen && <span className="ml-3">Tags</span>}</NavLink></li>
+
+                    {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-4">Performance</strong>}
+                    <li><NavLink to="/analytics" className={getNavLinkClass}><FiBarChart2 size={20} />{isSidebarOpen && <span className="ml-3">Analytics</span>}</NavLink></li>
+                </>
+            )}
+
+            {/* ================================================================== */}
+            {/* --- CONDITIONAL RENDERING FOR GAS DISTRIBUTOR WORKFLOW --- */}
+            {/* ================================================================== */}
+            {business_type === 'GAS_DISTRIBUTOR' && (
+                <>
+                    {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-2">Operations</strong>}
+                    <li>
+                        <NavLink to="/gas/import" className={getNavLinkClass}>
+                            <FiUploadCloud size={20} />
+                            {isSidebarOpen && <span className="ml-3">Upload Deliveries</span>}
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/gas/deliveries" className={getNavLinkClass}>
+                            <FiTruck size={20} />
+                            {isSidebarOpen && <span className="ml-3">Daily Reconciliation</span>}
+                        </NavLink>
+                    </li>
+
+                    {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-2">AI & Knowledge</strong>}
+                    <li><NavLink to="/knowledge/menu" className={getNavLinkClass}><FiClipboard size={20} />{isSidebarOpen && <span className="ml-3">Menu</span>}</NavLink></li>
+                    <li><NavLink to="/knowledge/qa" className={getNavLinkClass}><FiMessageSquare size={20} />{isSidebarOpen && <span className="ml-3">Q&A</span>}</NavLink></li>
+                    <li><NavLink to="/knowledge/ai-rules" className={getNavLinkClass}><FiCpu size={20} />{isSidebarOpen && <span className="ml-3">AI Tagging Rules</span>}</NavLink></li>
+
+                    <li><NavLink to="/operations/profile" className={getNavLinkClass}><FiSettings size={20} />{isSidebarOpen && <span className="ml-3">Business Profile</span>}</NavLink></li>
+                    <li><NavLink to="/operations/hours" className={getNavLinkClass}><FiClock size={20} />{isSidebarOpen && <span className="ml-3">Hours</span>}</NavLink></li>
+
+                    {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-4">Engagement</strong>}
+                    <li><NavLink to="/inbox" className={getNavLinkClass}><FiInbox size={20} />{isSidebarOpen && <span className="ml-3">Inbox</span>}</NavLink></li>
+                    <li><NavLink to="/campaigns" className={getNavLinkClass}><FiTag size={20} />{isSidebarOpen && <span className="ml-3">Campaigns</span>}</NavLink></li>
+                    <li><NavLink to="/import" className={getNavLinkClass}><FiUsers size={20} />{isSidebarOpen && <span className="ml-3">Customers</span>}</NavLink></li>
+                    <li><NavLink to="/tags" className={getNavLinkClass}><FiTag size={20} />{isSidebarOpen && <span className="ml-3">Tags</span>}</NavLink></li>
+
+                    {isSidebarOpen && <strong className="text-xs text-gray-400 uppercase px-2 pt-4">Performance</strong>}
+                    <li><NavLink to="/analytics" className={getNavLinkClass}><FiBarChart2 size={20} />{isSidebarOpen && <span className="ml-3">Analytics</span>}</NavLink></li>
+                </>
+            )}
         </ul>
       </div>
       {/* ========================================================================= */}

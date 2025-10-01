@@ -101,20 +101,35 @@ function InboxPage() {
     });
 
     useEffect(() => {
-        if (lastJsonMessage && lastJsonMessage.type === 'new_message') {
-            console.log('WebSocket update received:', lastJsonMessage);
+        if (lastJsonMessage && lastJsonMessage.type === 'conversation_update') {
             
-            // The most robust way to handle an update is to refresh the main list.
-            // This ensures the new message snippet, timestamp, and order are correct.
-            getInboxConversations().then(convosRes => {
-                setAllConversations(convosRes.data);
-                if (lastJsonMessage.contact?.contact_id === selectedContactId) {
-                    getConversationHistory(selectedContactId).then(historyRes => setMessageHistory(historyRes.data));
-                    // Also update the details view with any new tag/outcome info
-                    const updatedDetails = convosRes.data.find(c => c.contact.contact_id === selectedContactId);
-                    if(updatedDetails) setSelectedConversationDetails(updatedDetails);
-                }
+            console.log("✅ 'conversation_update' event received. Processing instant UI update...");
+
+            const updatedConvo = lastJsonMessage.conversation;
+
+            // Guard clause: ensure the payload is valid before proceeding.
+            if (!updatedConvo || !updatedConvo.contact) {
+                console.warn("WebSocket message is missing 'conversation' or 'contact' payload. Skipping.");
+                return;
+            }
+
+            // Perform the efficient "in-state" update.
+            setAllConversations(currentConversations => {
+                const filteredList = currentConversations.filter(
+                    c => c.contact.contact_id !== updatedConvo.contact.contact_id
+                );
+                return [updatedConvo, ...filteredList];
             });
+
+            // If the updated conversation is the one currently being viewed,
+            // we also need to refresh its full history to show the new message.
+            if (updatedConvo.contact.contact_id === selectedContactId) {
+                getConversationHistory(selectedContactId).then(historyRes => {
+                    setMessageHistory(historyRes.data);
+                });
+                // Update the details view as well.
+                setSelectedConversationDetails(updatedConvo);
+            }
         }
     }, [lastJsonMessage, selectedContactId]); // <-- Correctly depends on the message and the selected ID.
 

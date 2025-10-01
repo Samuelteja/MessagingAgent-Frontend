@@ -5,6 +5,13 @@ import axios from 'axios';
 // The backend is running on port 8000
 const API_URL = 'http://127.0.0.1:8000/api';
 
+const toLocalDateString = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const apiClient = axios.create({
   baseURL: API_URL,
   headers: {
@@ -131,13 +138,65 @@ export const uploadDeliveryList = (formData) => {
 };
 
 export const getBookings = (startDate, endDate) => {
-  return apiClient.get(`/bookings?start_date=${startDate}&end_date=${endDate}`);
+  return apiClient.get(`/bookings`, {
+    params: {
+      start_date: startDate,
+      end_date: endDate,
+    }
+  });
 };
 
-export const getDeliveryList = (date) => {
-  return apiClient.get(`/delivery-lists/${date}`);
+export const getDeliveryList = (date, filters = {}) => {
+  const params = new URLSearchParams();
+  if (filters.searchTerm) {
+    params.append('search_term', filters.searchTerm);
+  }
+  if (filters.status) {
+    params.append('status', filters.status);
+  }
+  
+  const queryString = params.toString();
+  const url = `/delivery-lists/${date}${queryString ? `?${queryString}` : ''}`;
+  
+  return apiClient.get(url);
+};
+
+export const updateDeliveryStatus = (deliveryId, payload) => {
+  return apiClient.patch(`/deliveries/${deliveryId}/status`, payload);
 };
 
 export const updateBooking = (bookingId, bookingData) => {
   return apiClient.put(`/bookings/${bookingId}`, bookingData);
+};
+
+export const getAllBookings = (filters) => {
+  const params = new URLSearchParams();
+
+  if (filters.startDate) {
+    // Use our new, safe helper function
+    params.append('start_date', toLocalDateString(filters.startDate));
+  }
+  if (filters.endDate) {
+    // Use our new, safe helper function
+    params.append('end_date', toLocalDateString(filters.endDate));
+  }
+  if (filters.searchTerm) {
+    params.append('search_term', filters.searchTerm);
+  }
+  if (filters.staffId) {
+    params.append('staff_id', filters.staffId);
+  }
+  if (filters.serviceId) {
+    params.append('service_id', filters.serviceId);
+  }
+  if (filters.status) {
+    params.append('status', filters.status);
+  }
+
+  return apiClient.get('/bookings/all', { params });
+};
+
+
+export const updateMenuItem = (itemId, itemData) => {
+  return apiClient.put(`/menu/${itemId}`, itemData);
 };
